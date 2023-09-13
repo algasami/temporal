@@ -6,8 +6,8 @@ bits 16 ; backwards compatibility
 
 
 ; fat12 header record osdev wiki fat
-jmp short start
-nop ; 4d
+jmp short start ; jmp short is just 0xEB, start is 0x3C, nop is 0x90
+nop ; 0x90
 bdb_oem:                    db "MSWIN4.1"
 bdb_bytes_per_sector:       dw 0x0200
 bdb_sectors_per_cluster:    db 0x01
