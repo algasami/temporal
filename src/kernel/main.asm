@@ -3,6 +3,7 @@ bits 16
 
 
 %define ENDL 0x0D, 0x0A
+%define ENTER_CODE 0x1C0D
 
 
 start:
@@ -12,30 +13,72 @@ start:
     call puts
 
 .read_loop:
-    call readc
-    call putc
+    call readline
+    mov si, ibuff
+    call puts
+    call flush
     jmp .read_loop
 
 .halt:
     cli
     hlt
 
+readline:
+    call readc
+    cmp ax, ENTER_CODE
+    jne readline
+    call putcrlf
+    ret
+
+; readc with life teletype
 ; Params:
 ; null
 ; Returns:
 ;   - ah is scancode
 ;   - al is char(byte) (0x00 if it's special)
 readc:
+    push bx
     mov ah, 0x00
     int 0x16 ; see stanis slav
-    or al, al
-    jz readc 
+
+    cmp ax, ENTER_CODE
+    jne .is_not_enter
+
+    mov bx, [ibuff_pointer]
+    mov [bx], byte 0x0D
+    inc word bx
+    mov [bx], byte 0x0A
+    inc word bx
+    mov [bx], byte 0x00
+    mov [ibuff_pointer], word bx
+
+    pop bx
+
+    mov si, ibuff
     ret
 
-; Params:
-; - al is char
-; Return:
-; - none
+.is_not_enter:
+    mov bx, [ibuff_pointer]
+    mov [bx], byte al
+    inc word bx
+    mov [bx], byte 0x00
+    mov [ibuff_pointer], word bx
+
+    pop bx
+
+    call putc
+    ret
+
+
+; helper
+putcrlf:
+    push ax
+    mov al, 0x0D
+    call putc
+    mov al, 0x0A
+    call putc
+    pop ax
+    ret
 putc:
     push ax
     push bx
@@ -46,6 +89,7 @@ putc:
     pop bx
     pop ax
     ret
+
 ;
 ; Prints a string to the screen
 ; Params:
@@ -71,6 +115,12 @@ puts:
     pop si
     ret
 
+flush:
+    mov [ibuff_pointer], word ibuff + 2
+    ret
+
+ibuff_pointer: dw word ibuff + 2
+
 msg_kernel:     db 'Execution role teleported to kernel!', ENDL
                 db "  _____ ___ __  __ ___  ___  ___   _   _    ", ENDL
                 db " |_   _| __|  \/  | _ \/ _ \| _ \ /_\ | |   ", ENDL
@@ -78,3 +128,5 @@ msg_kernel:     db 'Execution role teleported to kernel!', ENDL
                 db "   |_| |___|_|  |_|_|  \___/|_|_/_/ \_|____|", ENDL
                 db "KERNEL INTERFACE 2023", ENDL
                 db "--- INPUT BUFFER ---", ENDL, 0x00
+
+ibuff:          db "> ", 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
