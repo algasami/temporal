@@ -28,6 +28,7 @@ readline:
     cmp ax, ENTER_CODE
     jne readline
     call putcrlf
+    ; ! not pretty (too much side-effect)
     ret
 
 ; readc with life teletype
