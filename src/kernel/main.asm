@@ -45,6 +45,10 @@ readc:
     jne .is_not_enter
 
     mov bx, [ibuff_pointer]
+    ; * we need to use intermediate bx to index memory!
+    ; speaking of implementation, it's also logical to not
+    ; allow index to be indexed by memory's value!
+    ; (index memory and then index memory with the former's value in ONE instruction? not possible!)
     mov [bx], byte 0x0D
     inc word bx
     mov [bx], byte 0x0A
