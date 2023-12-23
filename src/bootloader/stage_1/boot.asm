@@ -138,7 +138,7 @@ start:
     cmp bx, [bdb_dir_entry_count]
     jl .find_file_loop
 
-    jmp find_kernel_error
+    jmp find_stage2_error
 
 .found_file_entry:
     ; di is now at file dir
@@ -245,7 +245,7 @@ floppy_error:
     ; call puts
     jmp wait_for_reboot
 
-find_kernel_error:
+find_stage2_error:
     ; mov si, msg_dir_error
     ; call puts
     jmp wait_for_reboot
@@ -356,8 +356,8 @@ disk_reset:
 
 msg_init:               db "SYS_BOOT", ENDL, 0x00
 msg_floppy_failed:      db "D_ERR", ENDL, 0x00
-msg_dir_error:          db "K_ERR", ENDL, 0x00
-target_file_name:       db "KERNEL  BIN"
+msg_dir_error:          db "S_ERR", ENDL, 0x00
+target_file_name:       db "STAGE2  BIN"
 file_cluster:           dw 0
 root_dir_end:           dw 0
 KERNEL_SEGMENT     equ 0x2000

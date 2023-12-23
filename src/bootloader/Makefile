@@ -1,10 +1,14 @@
-PROJECT_NAME = bootloader
+PROJECTS := stage_1 stage_2
 .PHONEY: all install clean
 
-install: ${PROJECT_ROOT}/${BUILD}/${PROJECT_NAME}.bin
-
-${PROJECT_ROOT}/${BUILD}/${PROJECT_NAME}.bin: boot.asm
-	${ASM} $^ -f bin -o $@
+install:
+	for dir in ${PROJECTS}; do \
+		${MAKE} -C $$dir install; \
+	done
 
 clean:
-	rm -f ${PROJECT_ROOT}/${BUILD}/${PROJECT_NAME}.bin
+	for dir in ${PROJECTS}; do \
+		${MAKE} -C $$dir clean; \
+	done
+	rm -rf ${PROJECT_ROOT}/${BUILD}/bootloader.bin
+

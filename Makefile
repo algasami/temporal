@@ -18,6 +18,7 @@ floppy_image: ${BUILD}/main_floppy.img
 ${BUILD}/main_floppy.img: install_projects
 	mformat -C -v NBOS -f 1440 -i $@
 	dd if=${BUILD}/bootloader.bin of=$@ conv=notrunc
+	mcopy -i $@ ${BUILD}/stage_2.bin "::stage_2.bin"
 	mcopy -i $@ ${BUILD}/kernel.bin "::kernel.bin"
 	mcopy -i $@ message.txt "::message.txt"
 
