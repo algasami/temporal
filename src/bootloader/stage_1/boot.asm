@@ -151,9 +151,9 @@ start:
     mov dl, [ebr_drive_number]
     call disk_read
 
-    mov bx, KERNEL_SEGMENT
+    mov bx, STAGE2_SEGMENT
     mov es, bx
-    mov bx, KERNEL_OFFSET
+    mov bx, STAGE2_OFFSET
 
 
 .read_file_loop:
@@ -202,11 +202,11 @@ start:
     ; prepare for kernel far jump (switching segments)
     mov dl, [ebr_drive_number]
 
-    mov ax, KERNEL_SEGMENT ; setup segment
+    mov ax, STAGE2_SEGMENT ; setup segment
     mov ds, ax
     mov es, ax
 
-    jmp KERNEL_SEGMENT:KERNEL_OFFSET
+    jmp STAGE2_SEGMENT:STAGE2_OFFSET
 
     jmp wait_for_reboot
 
@@ -357,11 +357,11 @@ disk_reset:
 msg_init:               db "SYS_BOOT", ENDL, 0x00
 msg_floppy_failed:      db "D_ERR", ENDL, 0x00
 msg_dir_error:          db "S_ERR", ENDL, 0x00
-target_file_name:       db "STAGE2  BIN"
+target_file_name:       db "STAGE_2 BIN"
 file_cluster:           dw 0
 root_dir_end:           dw 0
-KERNEL_SEGMENT     equ 0x2000
-KERNEL_OFFSET      equ 0
+STAGE2_SEGMENT     equ 0x2000
+STAGE2_OFFSET      equ 0
 times 510-($-$$) db 0x00
 dw 0xaa55
 read_buffer:

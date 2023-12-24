@@ -10,5 +10,6 @@ clean:
 	for dir in ${PROJECTS}; do \
 		${MAKE} -C $$dir clean; \
 	done
-	rm -rf ${PROJECT_ROOT}/${BUILD}/bootloader.bin
+	rm -rf ${PROJECT_ROOT}/${BUILD}/stage_1.bin
+	rm -rf ${PROJECT_ROOT}/${BUILD}/stage_2.bin
 
