@@ -6,6 +6,10 @@ export KERNEL 		:= ${SRC}/kernel
 export PROJECT_ROOT := $(abspath .)
 
 export BINUTILS_VERSION := 2.37
+export GCC_VERSION := 12.3.0
+
+export MAX_THREADS := 8
+
 export TARGET = i686-elf
 export TARGET_ASM = nasm
 export TARGET_ASMFLAGS =
