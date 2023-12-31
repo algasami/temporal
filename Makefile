@@ -1,12 +1,18 @@
 include global.mk
+
+PREFIX ?= ${BUILD}
+
 PROJECTS := bootloader kernel tools
 
 .PHONEY: all run install install_projects clean clean_projects always
 
-run: ${BUILD}/main_floppy.img
+run: ${PREFIX}/main_floppy.img
 	qemu-system-i386 -fda $^
 
-install: floppy_image
+install: build
+	cp ${BUILD}/main_floppy.img ${PREFIX}
+
+build: floppy_image
 
 floppy_image: ${BUILD}/main_floppy.img
 
