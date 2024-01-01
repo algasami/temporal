@@ -2,11 +2,12 @@
   description = "Temporal OS flake easy configs";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     flake-utils.url = "github:numtide/flake-utils/4022d587cbbfd70fe950c1e2083a02621806a725";
+    toolchain.url = "path:./toolchain";
   };
 
-  outputs = inputs@{ self, nixpkgs, flake-utils, ... }:
+  outputs = inputs@{ self, nixpkgs, flake-utils, toolchain, ... }:
   let
 
     lastModifiedDate = self.lastModifiedDate or self.lastModified or "19700101";
@@ -19,6 +20,7 @@
       pkgs = import nixpkgs { inherit system; };
       pkg_buildInputs = with pkgs; [
         qemu
+        toolchain.packages.${system}.default
       ];
       pkg_nativeBuildInputs = with pkgs; [
         gnumake
